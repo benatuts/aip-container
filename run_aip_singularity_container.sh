@@ -3,8 +3,37 @@
 # First parameter to this script is the container app name, defaulting to term
 APP=${1:-term}
 
+# Check and ensure correct parameter $1 passed in
+case $APP in
+  term )
+    echo "Starting GNOME Terminal";;
+  fullterm )
+    echo "Starting full terminal";;
+  vscode )
+    echo "Starting VS Code";;
+  * )
+    echo "
+    Use $0 to manually start the container:
+    # Start a gnome-terminal
+      $ run_aip_singularity_container.sh term
+
+    # Start visual studio code
+      $ run_aip_singularity_container.sh vscode
+
+    # Start a gnome-terminal-server and gnome-terminal
+      $ run_aip_singularity_container.sh fullterm
+    "
+    exit 1
+    ;;
+esac
+
 # Singularity image to use
 SIF=aip-container_latest.sif
+
+if [ ! -f ${SIF} ]; then
+  echo "Can't locate ${SIF}.  Please check your path and image location."
+  exit 1
+fi
 
 # Setup defaults to use if .config/aip_container is not present
 if [ -d "/images/tmp" ]
